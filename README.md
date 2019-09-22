@@ -7,13 +7,14 @@ The storage library is very simple to use. First we need to create the basic Bun
 ```c#
 var bunnyCDNStorage = new BunnyCDNStorage("storagezonename", "MyAccessKey");
 ```
-- [Upload](#uploading-an-object)
-- [List Objects](#listing-objects)
-- [Delete](#deleting-an-object)
+- [Upload](#uploading-objects)
+- [List](#listing-objects)
+- [Download](#downloading-objects)
+- [Delete](#deleting-objects)
 
 <br/>
 
-## Uploading an object:
+## Uploading objects:
 Uploading supports either loading from a stream or reading directly from a local file path. If the path to the object does not exist yet, it will be automatically created.
 
 **Uploading from a stream**
@@ -48,9 +49,25 @@ The StorageObject contains the following properties:
 - **StorageZoneId** - The ID of the storage zone that the object is linked to
 - **FullPath** - The full path to the file
 
+
 <br/>
 
-## Deleting an object:
+## Downloading objects:
+Downloading supports either loading into a stream or saving directly to a local file.
+
+**Download as a stream**
+```c#
+await bunnyCDNStorage.DownloadObjectAsStreamAsync("/storagezonename/helloworld.txt");
+```
+
+**Download as a file**
+```c#
+await bunnyCDNStorage.DownloadObjectAsync("/storagezonename/helloworld.txt", "local/file/path/helloworld.txt");
+```
+
+<br/>
+
+## Deleting objects:
 Deleting supports both files and directories. If the target object is a directory, the directory content will also be deleted.
 ```c#
 await bunnyCDNStorage.DeleteObjectAsync("/storagezonename/helloworld.txt");

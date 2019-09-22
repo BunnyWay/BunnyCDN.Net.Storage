@@ -3,7 +3,8 @@ The official .NET library used for interacting with the BunnyCDN Storage API.
 
 ### How to use:
 
-The storage library is very simple to use. First we need to create the basic BunnyCDNStorage object with the authentication details
+The storage library is very simple to use. First, create the basic BunnyCDNStorage object with the authentication details. It's the basic object for interaction with the API.
+
 ```c#
 var bunnyCDNStorage = new BunnyCDNStorage("storagezonename", "MyAccessKey");
 ```

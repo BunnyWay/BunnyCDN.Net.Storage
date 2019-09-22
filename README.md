@@ -30,7 +30,7 @@ await bunnyCDNStorage.UploadAsync("local/file/path/helloworld.txt", "/storagezon
 <br/>
 
 ## Listing objects:
-Get a list of of all objects on the given path.
+Get a list of of all objects on the given path. Returns a List<StorageObject> collection.
 ```c#
 var objects = await bunnyCDNStorage.GetStorageObjectsAsync("/storagezonename/");
 ```

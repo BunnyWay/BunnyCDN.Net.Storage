@@ -11,14 +11,12 @@ var bunnyCDNStorage = new BunnyCDNStorage("storagezonename", "MyAccessKey");
 ### Uploading a file:
 Uploading supports either loading from a stream or reading directly from a local file path.
 
-##### Uploading from a stream
+**Uploading from a stream**
 ```c#
-var bunnyCDNStorage = new BunnyCDNStorage("storagezonename", "MyAccessKey");
 await bunnyCDNStorage.UploadAsync(stream, "/storagezonename/helloworld.txt");
 ```
 
-##### Uploading a local file
+**Uploading a local file**
 ```c#
-var bunnyCDNStorage = new BunnyCDNStorage("storagezonename", "MyAccessKey");
 await bunnyCDNStorage.UploadAsync("local/file/path/helloworld.txt", "/storagezonename/helloworld.txt");
 ```

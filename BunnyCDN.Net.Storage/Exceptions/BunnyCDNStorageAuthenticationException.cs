@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BunnyCDN.Net.Storage
+﻿namespace BunnyCDN.Net.Storage
 {
     /// <summary>
     /// An exception thrown by BunnyCDNStorage caused by authentication failure

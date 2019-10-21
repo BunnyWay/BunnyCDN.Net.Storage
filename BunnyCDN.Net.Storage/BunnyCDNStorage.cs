@@ -1,11 +1,10 @@
-﻿using BunnyCDN.Net.Storage.Models;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using BunnyCDN.Net.Storage.Models;
 
 namespace BunnyCDN.Net.Storage
 {
@@ -24,7 +23,7 @@ namespace BunnyCDN.Net.Storage
         /// <summary>
         /// The HTTP Client used for the API communication
         /// </summary>
-        private HttpClient _http = null;
+        private HttpClient _http;
 
         /// <summary>
         /// Initializes a new instance of the BunnyCDNStorage class 
@@ -33,14 +32,14 @@ namespace BunnyCDN.Net.Storage
         /// <param name="apiAccessKey">The API key to authenticate with</param>
         public BunnyCDNStorage(string storageZoneName, string apiAccessKey)
         {
-            this.ApiAccessKey = apiAccessKey;
-            this.StorageZoneName = storageZoneName;
+            ApiAccessKey = apiAccessKey;
+            StorageZoneName = storageZoneName;
 
             // Initialize the HTTP Client
             _http = new HttpClient();
             _http.Timeout = new TimeSpan(0, 0, 120);
-            _http.DefaultRequestHeaders.Add("AccessKey", this.ApiAccessKey);
-            _http.BaseAddress = new Uri($"https://storage.bunnycdn.com/");
+            _http.DefaultRequestHeaders.Add("AccessKey", ApiAccessKey);
+            _http.BaseAddress = new Uri("https://storage.bunnycdn.com/");
         }
 
         #region Delete
@@ -49,7 +48,7 @@ namespace BunnyCDN.Net.Storage
         /// </summary>
         public async Task DeleteObjectAsync(string path)
         {
-            var normalizedPath = this.NormalizePath(path);
+            var normalizedPath = NormalizePath(path);
             try
             {
                 await _http.DeleteAsync(normalizedPath);
@@ -75,10 +74,8 @@ namespace BunnyCDN.Net.Storage
                 var responseJson = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<List<StorageObject>>(responseJson);
             }
-            else
-            {
-                throw this.MapResponseToException(response.StatusCode, normalizedPath);
-            }
+
+            throw MapResponseToException(response.StatusCode, normalizedPath);
         }
         #endregion
 
@@ -94,7 +91,7 @@ namespace BunnyCDN.Net.Storage
                 var response = await _http.PutAsync(normalizedPath, content);
                 if(!response.IsSuccessStatusCode)
                 {
-                    throw this.MapResponseToException(response.StatusCode, normalizedPath);
+                    throw MapResponseToException(response.StatusCode, normalizedPath);
                 }
             }
         }
@@ -112,7 +109,7 @@ namespace BunnyCDN.Net.Storage
                     var response = await _http.PutAsync(normalizedPath, content);
                     if (!response.IsSuccessStatusCode)
                     {
-                        throw this.MapResponseToException(response.StatusCode, normalizedPath);
+                        throw MapResponseToException(response.StatusCode, normalizedPath);
                     }
                 }
             }
@@ -128,10 +125,10 @@ namespace BunnyCDN.Net.Storage
         public async Task DownloadObject(string path, string localFilePath)
         {
 
-            var normalizedPath = this.NormalizePath(path);
+            var normalizedPath = NormalizePath(path);
             try
             {
-                using (var stream = await this.DownloadObjectAsStreamAsync(normalizedPath))
+                using (var stream = await DownloadObjectAsStreamAsync(normalizedPath))
                 {
                     // Create a buffered stream to speed up the download
                     using (var bufferedStream = new BufferedStream(stream, 1024 * 64))
@@ -158,7 +155,7 @@ namespace BunnyCDN.Net.Storage
         {
             try
             {
-                var normalizedPath = this.NormalizePath(path, false);
+                var normalizedPath = NormalizePath(path, false);
                 return await _http.GetStreamAsync(normalizedPath);
             }
             catch (WebException ex)
@@ -180,14 +177,13 @@ namespace BunnyCDN.Net.Storage
             {
                 return new BunnyCDNStorageFileNotFoundException(path);
             }
-            else if (statusCode == HttpStatusCode.Unauthorized)
+
+            if (statusCode == HttpStatusCode.Unauthorized)
             {
-                return new BunnyCDNStorageAuthenticationException(this.StorageZoneName, this.ApiAccessKey);
+                return new BunnyCDNStorageAuthenticationException(StorageZoneName, ApiAccessKey);
             }
-            else
-            {
-                return new BunnyCDNStorageException("An unknown error has occured during the request.");
-            }
+
+            return new BunnyCDNStorageException("An unknown error has occured during the request.");
         }
 
         /// <summary>
@@ -196,9 +192,9 @@ namespace BunnyCDN.Net.Storage
         /// <returns></returns>
         private string NormalizePath(string path, bool? isDirectory = null)
         {
-            if (!path.StartsWith($"/{this.StorageZoneName}/") && !path.StartsWith($"{this.StorageZoneName}/"))
+            if (!path.StartsWith($"/{StorageZoneName}/") && !path.StartsWith($"{StorageZoneName}/"))
             {
-                throw new BunnyCDNStorageException($"Path validation failed. File path must begin with /{this.StorageZoneName}/.");
+                throw new BunnyCDNStorageException($"Path validation failed. File path must begin with /{StorageZoneName}/.");
             }
 
             path = path.Replace("\\", "/");

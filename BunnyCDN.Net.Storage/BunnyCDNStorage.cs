@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using BunnyCDN.Net.Storage.Models;
 
@@ -72,7 +73,7 @@ namespace BunnyCDN.Net.Storage
             if(response.IsSuccessStatusCode)
             {
                 var responseJson = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<List<StorageObject>>(responseJson);
+                return JsonSerializer.Deserialize<List<StorageObject>>(responseJson);
             }
 
             throw MapResponseToException(response.StatusCode, normalizedPath);

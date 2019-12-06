@@ -47,12 +47,15 @@ namespace BunnyCDN.Net.Storage
         /// <summary>
         /// Delete an object at the given path. If the object is a directory, the contents will also be deleted.
         /// </summary>
-        public async Task DeleteObjectAsync(string path)
+        /// <param name="path">Path to delete</param>
+        /// <returns>Deletion success</returns>
+        public async Task<bool> DeleteObjectAsync(string path)
         {
-            var normalizedPath = this.NormalizePath(path);
+            var normalizedPath = NormalizePath(path);
             try
             {
-                await _http.DeleteAsync(normalizedPath);
+                var response = await _http.DeleteAsync(normalizedPath);
+                return response.IsSuccessStatusCode;
             }
             catch(WebException ex)
             {
@@ -65,6 +68,8 @@ namespace BunnyCDN.Net.Storage
         /// <summary>
         /// Get the list of storage objects on the given path
         /// </summary>
+        /// <param name="path">Path to retrieve objects from</param>
+        /// <returns>Path's storage objects</returns>
         public async Task<List<StorageObject>> GetStorageObjectsAsync(string path)
         {
             var normalizedPath = this.NormalizePath(path, true);
@@ -84,8 +89,10 @@ namespace BunnyCDN.Net.Storage
 
         #region Upload
         /// <summary>
-        /// Upload an object from a stream
+        /// Upload an object from a stream (missing path will be created)
         /// </summary>
+        /// <param name="stream">Stream containing file contents</param>
+        /// <param name="path">Destination path</param>
         public async Task UploadAsync(Stream stream, string path)
         {
             var normalizedPath = this.NormalizePath(path, false);
@@ -102,6 +109,8 @@ namespace BunnyCDN.Net.Storage
         /// <summary>
         /// Upload a local file to the storage
         /// </summary>
+        /// <param name="localFilePath">Local path of file to upload</param>
+        /// <param name="path">Destination path</param>
         public async Task UploadAsync(string localFilePath, string path)
         {
             var normalizedPath = this.NormalizePath(path, false);
@@ -123,8 +132,8 @@ namespace BunnyCDN.Net.Storage
         /// <summary>
         /// Download the object to a local file
         /// </summary>
-        /// <param name="path">path</param>
-        /// <returns></returns>
+        /// <param name="path">Source path to download from</param>
+        /// <param name="localFilePath">Local path to download file to</param>
         public async Task DownloadObjectAsync(string path, string localFilePath)
         {
 
@@ -152,8 +161,8 @@ namespace BunnyCDN.Net.Storage
         /// <summary>
         /// Return a stream with the contents of the object
         /// </summary>
-        /// <param name="path">path</param>
-        /// <returns></returns>
+        /// <param name="path">Source path to download from</param>
+        /// <returns>Stream containing the file contents</returns>
         public async Task<Stream> DownloadObjectAsStreamAsync(string path)
         {
             try
@@ -190,7 +199,7 @@ namespace BunnyCDN.Net.Storage
         /// <summary>
         /// Normalize a path string
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Recognizable, valid string for use against API calls</returns>
         private string NormalizePath(string path, bool? isDirectory = null)
         {
             if (!path.StartsWith($"/{this.StorageZoneName}/") && !path.StartsWith($"{this.StorageZoneName}/"))

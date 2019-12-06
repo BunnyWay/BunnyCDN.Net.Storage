@@ -1,0 +1,8 @@
+C:\Users\info\source\repos\BunnyCDN.Net.Storage\BunnyCDN.Net.Storage\bin\Debug\netcoreapp2.1\BunnyCDN.Net.Storage.deps.json
+C:\Users\info\source\repos\BunnyCDN.Net.Storage\BunnyCDN.Net.Storage\bin\Debug\netcoreapp2.1\BunnyCDN.Net.Storage.dll
+C:\Users\info\source\repos\BunnyCDN.Net.Storage\BunnyCDN.Net.Storage\obj\Debug\netcoreapp2.1\BunnyCDN.Net.Storage.csprojAssemblyReference.cache
+C:\Users\info\source\repos\BunnyCDN.Net.Storage\BunnyCDN.Net.Storage\obj\Debug\netcoreapp2.1\BunnyCDN.Net.Storage.AssemblyInfoInputs.cache
+C:\Users\info\source\repos\BunnyCDN.Net.Storage\BunnyCDN.Net.Storage\obj\Debug\netcoreapp2.1\BunnyCDN.Net.Storage.AssemblyInfo.cs
+C:\Users\info\source\repos\BunnyCDN.Net.Storage\BunnyCDN.Net.Storage\bin\Debug\netcoreapp2.1\BunnyCDN.Net.Storage.pdb
+C:\Users\info\source\repos\BunnyCDN.Net.Storage\BunnyCDN.Net.Storage\obj\Debug\netcoreapp2.1\BunnyCDN.Net.Storage.dll
+C:\Users\info\source\repos\BunnyCDN.Net.Storage\BunnyCDN.Net.Storage\obj\Debug\netcoreapp2.1\BunnyCDN.Net.Storage.pdb

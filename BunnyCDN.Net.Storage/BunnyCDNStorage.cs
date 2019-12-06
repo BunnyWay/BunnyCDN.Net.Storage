@@ -176,17 +176,14 @@ namespace BunnyCDN.Net.Storage
         /// <param name="path">The called path</param>
         private BunnyCDNStorageException MapResponseToException(HttpStatusCode statusCode, string path)
         {
-            if (statusCode == HttpStatusCode.NotFound)
+            switch (statusCode)
             {
-                return new BunnyCDNStorageFileNotFoundException(path);
-            }
-            else if (statusCode == HttpStatusCode.Unauthorized)
-            {
-                return new BunnyCDNStorageAuthenticationException(this.StorageZoneName, this.ApiAccessKey);
-            }
-            else
-            {
-                return new BunnyCDNStorageException("An unknown error has occured during the request.");
+                case HttpStatusCode.NotFound:
+                    return new BunnyCDNStorageFileNotFoundException(path);
+                case HttpStatusCode.Unauthorized:
+                    return new BunnyCDNStorageAuthenticationException(StorageZoneName, ApiAccessKey);
+                default:
+                    return new BunnyCDNStorageException("An unknown error has occured during the request.");
             }
         }
 

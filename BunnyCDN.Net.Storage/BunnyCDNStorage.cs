@@ -46,7 +46,7 @@ namespace BunnyCDN.Net.Storage
             _http = new HttpClient();
             _http.Timeout = new TimeSpan(0, 0, 120);
             _http.DefaultRequestHeaders.Add("AccessKey", this.ApiAccessKey);
-            _http.BaseAddress = new Uri($"https://storage.bunnycdn.com/");
+            _http.BaseAddress = new Uri("https://storage.bunnycdn.com/");
         }
 
         #region Delete
@@ -62,7 +62,7 @@ namespace BunnyCDN.Net.Storage
             }
             catch(WebException ex)
             {
-                throw MapResponseToException((HttpStatusCode)(int)ex.Status, path);
+                throw this.MapResponseToException((HttpStatusCode)(int)ex.Status, path);
             }
         }
         #endregion
@@ -73,7 +73,7 @@ namespace BunnyCDN.Net.Storage
         /// </summary>
         public async Task<List<StorageObject>> GetStorageObjectsAsync(string path)
         {
-            var normalizedPath = NormalizePath(path, true);
+            var normalizedPath = this.NormalizePath(path, true);
             var response = await _http.GetAsync(normalizedPath);
 
             if(response.IsSuccessStatusCode)
@@ -98,7 +98,7 @@ namespace BunnyCDN.Net.Storage
         /// </summary>
         public async Task UploadAsync(Stream stream, string path)
         {
-            var normalizedPath = NormalizePath(path, false);
+            var normalizedPath = this.NormalizePath(path, false);
             using (var content = new StreamContent(stream))
             {
                 var response = await _http.PutAsync(normalizedPath, content);
@@ -114,7 +114,7 @@ namespace BunnyCDN.Net.Storage
         /// </summary>
         public async Task UploadAsync(string localFilePath, string path)
         {
-            var normalizedPath = NormalizePath(path, false);
+            var normalizedPath = this.NormalizePath(path, false);
             using (var fileStream = new FileStream(localFilePath, FileMode.Open, FileAccess.Read, FileShare.Read, 1024 * 64))
             {
                 using (var content = new StreamContent(fileStream))
@@ -131,11 +131,11 @@ namespace BunnyCDN.Net.Storage
 
         #region Download
         /// <summary>
-        /// Return a stream with the contents of the object
+        /// Download the object to a local file
         /// </summary>
         /// <param name="path">path</param>
         /// <returns></returns>
-        public async Task DownloadObject(string path, string localFilePath)
+        public async Task DownloadObjectAsync(string path, string localFilePath)
         {
 
             var normalizedPath = this.NormalizePath(path);
@@ -155,7 +155,7 @@ namespace BunnyCDN.Net.Storage
             }
             catch(WebException ex)
             {
-                throw MapResponseToException((HttpStatusCode)(int)ex.Status, path);
+                throw this.MapResponseToException((HttpStatusCode)(int)ex.Status, path);
             }
         }
 
@@ -173,7 +173,7 @@ namespace BunnyCDN.Net.Storage
             }
             catch (WebException ex)
             {
-                throw MapResponseToException((HttpStatusCode)(int)ex.Status, path);
+                throw this.MapResponseToException((HttpStatusCode)(int)ex.Status, path);
             }
         }
         #endregion
@@ -229,10 +229,12 @@ namespace BunnyCDN.Net.Storage
                     }
                 }
             }
+            // Remove double slashes
             while (path.Contains("//"))
             {
                 path.Replace("//", "/");
             }
+            // Remove the starting slash
             if(path.StartsWith("/"))
             {
                 path = path.Remove(0, 1);

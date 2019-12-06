@@ -207,7 +207,7 @@ namespace BunnyCDN.Net.Storage
             // Trim all prepending & tailing whitespace, fix windows-like paths then remove prepending slashes
             path = path.Trim()
                 .Replace("\\", "/")
-                .TrimStart("/");
+                .TrimStart('/');
 
             if (!path.StartsWith($"{StorageZoneName}/"))
                 throw new BunnyCDNStorageException($"Path validation failed. File path must begin with /{StorageZoneName}/.");
@@ -215,7 +215,7 @@ namespace BunnyCDN.Net.Storage
             if (isDirectory.HasValue)
             {
                 if (isDirectory.Value)
-                    path = path.TrimEnd("/") + "/";
+                    path = path.TrimEnd('/') + "/";
                 else if (path.EndsWith("/"))
                     throw new BunnyCDNStorageException("The requested path is invalid, cannot be directory.");
             }

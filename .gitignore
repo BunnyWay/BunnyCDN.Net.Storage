@@ -2,5 +2,9 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/BunnyCDN.Net.Storage/.vs/BunnyCDN.Net.Storage
-/.vs
+
+### DotnetCore ###
+# .NET Core build folders
+bin/
+obj/
+.vs/

@@ -11,6 +11,8 @@ namespace BunnyCDN.Net.Storage
 {
     public class BunnyCDNStorage
     {
+        public const string API_URI = "https://storage.bunnycdn.com/";
+
         /// <summary>
         /// The API access key used for authentication
         /// </summary>
@@ -31,16 +33,16 @@ namespace BunnyCDN.Net.Storage
         /// </summary>
         /// <param name="storageZoneName">The name of the storage zone to connect to</param>
         /// <param name="apiAccessKey">The API key to authenticate with</param>
-        public BunnyCDNStorage(string storageZoneName, string apiAccessKey)
+        public BunnyCDNStorage(string storageZoneName, string apiAccessKey, HttpMessageHandler handler = null)
         {
             this.ApiAccessKey = apiAccessKey;
             this.StorageZoneName = storageZoneName;
 
             // Initialize the HTTP Client
-            _http = new HttpClient();
+            _http = handler != null ? new HttpClient(handler) : new HttpClient();
             _http.Timeout = new TimeSpan(0, 0, 120);
             _http.DefaultRequestHeaders.Add("AccessKey", this.ApiAccessKey);
-            _http.BaseAddress = new Uri("https://storage.bunnycdn.com/");
+            _http.BaseAddress = new Uri(API_URI);
         }
 
         #region Delete

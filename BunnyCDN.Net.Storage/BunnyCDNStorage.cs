@@ -200,41 +200,26 @@ namespace BunnyCDN.Net.Storage
         /// Normalize a path string
         /// </summary>
         /// <returns>Recognizable, valid string for use against API calls</returns>
-        private string NormalizePath(string path, bool? isDirectory = null)
+        public string NormalizePath(string path, bool? isDirectory = null)
         {
-            if (!path.StartsWith($"/{this.StorageZoneName}/") && !path.StartsWith($"{this.StorageZoneName}/"))
-            {
-                throw new BunnyCDNStorageException($"Path validation failed. File path must begin with /{this.StorageZoneName}/.");
-            }
+            // Trim all prepending & tailing whitespace, fix windows-like paths then remove prepending slashes
+            path = path.Trim()
+                .Replace("\\", "/")
+                .TrimStart("/");
 
-            path = path.Replace("\\", "/");
-            if (isDirectory != null)
+            if (!path.StartsWith($"{StorageZoneName}/"))
+                throw new BunnyCDNStorageException($"Path validation failed. File path must begin with /{StorageZoneName}/.");
+
+            if (isDirectory.HasValue)
             {
                 if (isDirectory.Value)
-                {
-                    if (!path.EndsWith("/"))
-                    {
-                        path = path + "/";
-                    }
-                }
-                else
-                {
-                    if (path.EndsWith("/") && path != "/")
-                    {
-                        throw new BunnyCDNStorageException("The requested path is invalid.");
-                    }
-                }
+                    path = path.TrimEnd("/") + "/";
+                else if (path.EndsWith("/"))
+                    throw new BunnyCDNStorageException("The requested path is invalid, cannot be directory.");
             }
-            // Remove double slashes
+
             while (path.Contains("//"))
-            {
-                path.Replace("//", "/");
-            }
-            // Remove the starting slash
-            if(path.StartsWith("/"))
-            {
-                path = path.Remove(0, 1);
-            }
+                path = path.Replace("//", "/");
 
             return path;
         }

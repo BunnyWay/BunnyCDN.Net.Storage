@@ -4,13 +4,6 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-
-#if NETSTANDARD2_0
-using Newtonsoft.Json;
-#else
-using System.Text.Json;
-#endif
-
 using BunnyCDN.Net.Storage.Models;
 
 namespace BunnyCDN.Net.Storage
@@ -86,11 +79,7 @@ namespace BunnyCDN.Net.Storage
             if(response.IsSuccessStatusCode)
             {
                 var responseJson = await response.Content.ReadAsStringAsync();
-#if NETSTANDARD2_0
-                return JsonConvert.DeserializeObject<List<StorageObject>>(responseJson);
-#else
-                return JsonSerializer.Deserialize<List<StorageObject>>(responseJson);
-#endif
+                return Serializer.Deserialize<List<StorageObject>>(responseJson);
             }
             else
             {

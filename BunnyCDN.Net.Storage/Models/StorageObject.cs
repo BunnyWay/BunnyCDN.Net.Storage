@@ -55,12 +55,6 @@ namespace BunnyCDN.Net.Storage.Models
         /// <summary>
         /// Gets the full path to the file
         /// </summary>
-        public string FullPath
-        {
-            get
-            {
-                return this.Path + ObjectName;
-            }
-        }
+        public string FullPath => Path + ObjectName;
     }
 }

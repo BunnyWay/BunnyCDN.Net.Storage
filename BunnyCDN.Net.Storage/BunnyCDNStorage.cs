@@ -96,12 +96,20 @@ namespace BunnyCDN.Net.Storage
         /// <summary>
         /// Upload an object from a stream
         /// </summary>
-        public async Task UploadAsync(Stream stream, string path)
+        public async Task UploadAsync(Stream stream, string path, string sha256Checksum = null)
         {
             var normalizedPath = this.NormalizePath(path, false);
             using (var content = new StreamContent(stream))
             {
-                var response = await _http.PutAsync(normalizedPath, content);
+                var message = new HttpRequestMessage(HttpMethod.Put, normalizedPath)
+                {
+                    Content = content
+                };
+
+                if (sha256Checksum != null)
+                    message.Headers.Add("Checksum", sha256Checksum);
+
+                var response = await _http.SendAsync(message);
                 if(!response.IsSuccessStatusCode)
                 {
                     throw this.MapResponseToException(response.StatusCode, normalizedPath);

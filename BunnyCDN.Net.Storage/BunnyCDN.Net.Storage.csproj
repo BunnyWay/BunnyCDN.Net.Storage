@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+
+    <Authors>BunnyWay</Authors>
+    <Description>The official .NET library used for interacting with the BunnyCDN Storage API.</Description>
+    <PackageId>BunnyCDN.Net.Storage</PackageId>
+    <PackageTags>BunnyCDN API storage async netstandard</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/BunnyWay/BunnyCDN.Net.Storage</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>

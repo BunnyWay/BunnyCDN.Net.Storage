@@ -1,0 +1,19 @@
+language: csharp
+dist: bionic
+mono: none
+dotnet: 3.1.100
+install:
+ - dotnet restore
+
+jobs:
+  include:
+    - stage: build
+      script: dotnet build
+    - stage: test
+      script: dotnet test
+    - stage: pack-nuget
+      script:
+        - cd ./BunnyCDN.Net.Storage/
+        - dotnet pack -c Release -p:PackageVersion=$TRAVIS_TAG
+        - dotnet nuget push "./bin/Release/*.nupkg" -k "$NUGET_KEY" -s "https://api.nuget.org/v3/index.json"
+      if: tag =~ ^*.*.*$

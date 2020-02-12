@@ -8,10 +8,12 @@ The storage library is very simple to use. First, create the basic BunnyCDNStora
 ```c#
 var bunnyCDNStorage = new BunnyCDNStorage("storagezonename", "MyAccessKey");
 ```
-- [Upload](#uploading-objects)
-- [List](#listing-objects)
-- [Download](#downloading-objects)
-- [Delete](#deleting-objects)
+- [BunnyCDN.Net.Storage](#bunnycdnnetstorage)
+    - [How to use:](#how-to-use)
+  - [Uploading objects:](#uploading-objects)
+  - [Listing objects:](#listing-objects)
+  - [Downloading objects:](#downloading-objects)
+  - [Deleting objects:](#deleting-objects)
 
 <br/>
 
@@ -26,6 +28,20 @@ await bunnyCDNStorage.UploadAsync(stream, "/storagezonename/helloworld.txt");
 **Uploading a local file**
 ```c#
 await bunnyCDNStorage.UploadAsync("local/file/path/helloworld.txt", "/storagezonename/helloworld.txt");
+```
+**Uploading with checksum verification**
+```c#
+# Providing the hash
+await bunnyCDNStorage.UploadAsync(stream, "/storagezonename/helloworld.txt", "d04b98f48e8f8bcc15c6ae5ac050801cd6dcfd428fb5f9e65c4e16e7807340fa");
+await bunnyCDNStorage.UploadAsync("/local/path/to/file.txt", "/storagezonename/helloworld.txt", "d04b98f48e8f8bcc15c6ae5ac050801cd6dcfd428fb5f9e65c4e16e7807340fa");
+# Auto generating the hash
+await bunnyCDNStorage.UploadAsync(stream, "/storagezonename/helloworld.txt", true);
+await bunnyCDNStorage.UploadAsync("/local/path/to/file.txt", "/storagezonename/helloworld.txt", true);
+# Provide hash which will be auto-generated if format is invalid
+await bunnyCDNStorage.UploadAsync(stream, "/storagezonename/helloworld.txt", true, "d04b98f48e8f8bcc15c6ae5ac050801cd6dcfd428fb5f9e65c4e16e7807340fa");
+await bunnyCDNStorage.UploadAsync("/local/path/to/file.txt", "/storagezonename/helloworld.txt", true, "d04b98f48e8f8bcc15c6ae5ac050801cd6dcfd428fb5f9e65c4e16e7807340fa");
+await bunnyCDNStorage.UploadAsync(stream, "/storagezonename/helloworld.txt", true, "invalidtobereplaced");
+await bunnyCDNStorage.UploadAsync("/local/path/to/file.txt", "/storagezonename/helloworld.txt", true, "invalidtobereplaced");
 ```
 
 <br/>

@@ -2,6 +2,18 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+    <Version>1.0.4</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Company>BunnyWay d.o.o.</Company>
+    <Description>The official .NET library used for interacting with the BunnyCDN Storage API.</Description>
+    <Authors>BunnyWay d.o.o.</Authors>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/BunnyWay/BunnyCDN.Net.Storage</PackageProjectUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageIconUrl />
+    <PackageReleaseNotes>Added support for replicated storage</PackageReleaseNotes>
+    <PackageTags>storage</PackageTags>
+    <Copyright>Copyright 2020 BunnyWay d.o.o.</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,6 +29,13 @@
 
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\Nuget\icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

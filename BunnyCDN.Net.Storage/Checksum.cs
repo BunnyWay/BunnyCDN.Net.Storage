@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -8,16 +9,10 @@ namespace BunnyCDN.Net.Storage
     {
         internal static string Generate(Stream stream)
         {
-            using (SHA256 sha256 = SHA256.Create())
+            using (var sha = new SHA256Managed())
             {
-                byte[] bytes = sha256.ComputeHash(stream);
-
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    builder.Append(bytes[i].ToString("x2"));
-                }
-                return builder.ToString();
+                byte[] checksumData = sha.ComputeHash(stream);
+                return BitConverter.ToString(checksumData).Replace("-", String.Empty);
             }
         }
     }

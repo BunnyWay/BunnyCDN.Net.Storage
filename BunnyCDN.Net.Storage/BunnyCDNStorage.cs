@@ -116,7 +116,14 @@ namespace BunnyCDN.Net.Storage
                 };
 
                 if (validateChecksum && string.IsNullOrWhiteSpace(sha256Checksum))
+                {
+                    if (!stream.CanSeek)
+                        throw new BunnyCDNStorageChecksumException("Unable to generate checksum for non-seekable stream.", null);
+
+                    long startPosition = stream.Position;
                     sha256Checksum = Checksum.Generate(stream);
+                    stream.Position = startPosition;
+                }
 
                 if (!string.IsNullOrWhiteSpace(sha256Checksum))
                     message.Headers.Add("Checksum", sha256Checksum);

@@ -15,8 +15,9 @@ The BunnyCDNStorage constructor takes the following parameters:
 - **storageZoneRegion** - (Optional) The storage zone region code (de, ny, or sg). By default de is selected.
 - **handler** - (Optional) The HttpMessageHandler used by the internal HttpClient
 
-- [BunnyCDN.Net.Storage](#bunnycdnnetstorage)
-    - [How to use:](#how-to-use)
+
+### Navigation:
+  - [How to use:](#how-to-use)
   - [Uploading objects:](#uploading-objects)
   - [Listing objects:](#listing-objects)
   - [Downloading objects:](#downloading-objects)

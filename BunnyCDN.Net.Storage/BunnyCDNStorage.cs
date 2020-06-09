@@ -10,8 +10,6 @@ namespace BunnyCDN.Net.Storage
 {
     public class BunnyCDNStorage
     {
-        public const string API_URI = "https://storage.bunnycdn.com/";
-
         /// <summary>
         /// The API access key used for authentication
         /// </summary>
@@ -32,7 +30,7 @@ namespace BunnyCDN.Net.Storage
         /// </summary>
         /// <param name="storageZoneName">The name of the storage zone to connect to</param>
         /// <param name="apiAccessKey">The API key to authenticate with</param>
-        public BunnyCDNStorage(string storageZoneName, string apiAccessKey, HttpMessageHandler handler = null)
+        public BunnyCDNStorage(string storageZoneName, string apiAccessKey, string mainReplicationRegion = "de", HttpMessageHandler handler = null)
         {
             this.ApiAccessKey = apiAccessKey;
             this.StorageZoneName = storageZoneName;
@@ -41,7 +39,7 @@ namespace BunnyCDN.Net.Storage
             _http = handler != null ? new HttpClient(handler) : new HttpClient();
             _http.Timeout = new TimeSpan(0, 0, 120);
             _http.DefaultRequestHeaders.Add("AccessKey", this.ApiAccessKey);
-            _http.BaseAddress = new Uri(API_URI);
+            _http.BaseAddress = new Uri(this.GetBaseAddress(mainReplicationRegion));
         }
 
         #region Delete
@@ -235,5 +233,20 @@ namespace BunnyCDN.Net.Storage
             return path;
         }
         #endregion
+
+        /// <summary>
+        /// Get the base HTTP URL address of the storage endpoint
+        /// </summary>
+        /// <param name="mainReplicationRegion">The master region zone code</param>
+        /// <returns></returns>
+        private string GetBaseAddress(string mainReplicationRegion)
+        {
+            if(mainReplicationRegion == "" || mainReplicationRegion.ToLower() == "de")
+            {
+                return "https://storage.bunnycdn.com/";
+            }
+
+            return $"https://{mainReplicationRegion}.storage.bunnycdn.com/";
+        }
     }
 }

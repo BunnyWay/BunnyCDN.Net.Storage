@@ -6,10 +6,18 @@ The official .NET library used for interacting with the BunnyCDN Storage API.
 The storage library is very simple to use. First, create the basic BunnyCDNStorage object with the authentication details. It's the basic object for interaction with the API.
 
 ```c#
-var bunnyCDNStorage = new BunnyCDNStorage("storagezonename", "MyAccessKey");
+var bunnyCDNStorage = new BunnyCDNStorage("storagezonename", "MyAccessKey", "de");
 ```
-- [BunnyCDN.Net.Storage](#bunnycdnnetstorage)
-    - [How to use:](#how-to-use)
+
+The BunnyCDNStorage constructor takes the following parameters:
+- **storageZoneName** - The name of your storage zone
+- **apiAccessKey** - The API access key (password)
+- **storageZoneRegion** - (Optional) The storage zone region code (de, ny, or sg). By default de is selected.
+- **handler** - (Optional) The HttpMessageHandler used by the internal HttpClient
+
+
+### Navigation:
+  - [How to use:](#how-to-use)
   - [Uploading objects:](#uploading-objects)
   - [Listing objects:](#listing-objects)
   - [Downloading objects:](#downloading-objects)

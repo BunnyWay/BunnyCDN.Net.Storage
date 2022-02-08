@@ -94,8 +94,9 @@ namespace BunnyCDN.Net.Storage
         /// <param name="path">Destination path</param>
         /// <param name="sha256Checksum">The SHA256 checksum of the uploaded content. The server will compare the final SHA256 to the 
         /// checksum and reject the request in case the checksums do not match (ignored if left blank).</param>
-        public async Task UploadAsync(Stream stream, string path, string sha256Checksum = null)
-            => await UploadAsync(stream, path, false, sha256Checksum);
+        /// <param name="contentTypeOverride">If set to a non-empty value, the value will override the default Content-Type of the file
+        public async Task UploadAsync(Stream stream, string path, string sha256Checksum = null, string contentTypeOverride = "")
+            => await UploadAsync(stream, path, false, sha256Checksum, contentTypeOverride);
 
         /// <summary>
         /// Upload an object from a stream (missing path will be created)
@@ -105,7 +106,8 @@ namespace BunnyCDN.Net.Storage
         /// <param name="validateChecksum">Generate the SHA256 checksum of the uploading content and append to request for server-side verification.</param>
         /// <param name="sha256Checksum">The SHA256 checksum of the uploaded content. The server will compare the final SHA256 to the 
         /// checksum and reject the request in case the checksums do not match (will be generated if left null & validateChecksum is true).</param>
-        public async Task UploadAsync(Stream stream, string path, bool validateChecksum, string sha256Checksum = null)
+        /// <param name="contentTypeOverride">If set to a non-empty value, the value will override the default Content-Type of the file
+        public async Task UploadAsync(Stream stream, string path, bool validateChecksum, string sha256Checksum = null, string contentTypeOverride = "")
         {
             var normalizedPath = this.NormalizePath(path, false);
             using (var content = new StreamContent(stream))
@@ -128,6 +130,9 @@ namespace BunnyCDN.Net.Storage
                 if (!string.IsNullOrWhiteSpace(sha256Checksum))
                     message.Headers.Add("Checksum", sha256Checksum);
 
+                if(!string.IsNullOrWhiteSpace(contentTypeOverride))
+                    message.Headers.Add("Override-Content-Type", contentTypeOverride);
+
                 var response = await _http.SendAsync(message);
                 if(!response.IsSuccessStatusCode)
                 {
@@ -146,8 +151,9 @@ namespace BunnyCDN.Net.Storage
         /// <param name="path">Destination path</param>
         /// <param name="sha256Checksum">The SHA256 checksum of the uploaded content. The server will compare the final SHA256 to the 
         /// checksum and reject the request in case the checksums do not match (will be generated if left null & validateChecksum is true).</param>
-        public async Task UploadAsync(string localFilePath, string path, string sha256Checksum = null)
-            => await UploadAsync(localFilePath, path, false, sha256Checksum);
+        /// <param name="contentTypeOverride">If set to a non-empty value, the value will override the default Content-Type of the file
+        public async Task UploadAsync(string localFilePath, string path, string sha256Checksum = null, string contentTypeOverride = "")
+            => await UploadAsync(localFilePath, path, false, sha256Checksum, contentTypeOverride);
 
         /// <summary>
         /// Upload a local file to the storage
@@ -157,11 +163,12 @@ namespace BunnyCDN.Net.Storage
         /// <param name="validateChecksum">Generate a SHA256 checksum of the uploaded content and append to request for server-side verification.</param>
         /// <param name="sha256Checksum">The SHA256 checksum of the uploaded content. The server will compare the final SHA256 to the 
         /// checksum and reject the request in case the checksums do not match (will be generated if left null & validateChecksum is true).</param>
-        public async Task UploadAsync(string localFilePath, string path, bool validateChecksum, string sha256Checksum = null)
+        /// <param name="contentTypeOverride">If set to a non-empty value, the value will override the default Content-Type of the file
+        public async Task UploadAsync(string localFilePath, string path, bool validateChecksum, string sha256Checksum = null, string contentTypeOverride = "")
         {
             using (var fileStream = new FileStream(localFilePath, FileMode.Open, FileAccess.Read, FileShare.Read, 1024 * 64))
             {
-                await UploadAsync(fileStream, path, validateChecksum, sha256Checksum);
+                await UploadAsync(fileStream, path, validateChecksum, sha256Checksum, contentTypeOverride);
             }
         }
         #endregion

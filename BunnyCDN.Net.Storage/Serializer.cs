@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-#if NETSTANDARD2_0
+﻿#if NETSTANDARD2_0
 using Newtonsoft.Json;
 #else
 using System.Text.Json;

@@ -9,7 +9,7 @@ namespace BunnyCDN.Net.Storage
     {
         internal static string Generate(Stream stream)
         {
-            using (var sha = new SHA256Managed())
+            using (var sha = SHA256.Create())
             {
                 byte[] checksumData = sha.ComputeHash(stream);
                 return BitConverter.ToString(checksumData).Replace("-", String.Empty);

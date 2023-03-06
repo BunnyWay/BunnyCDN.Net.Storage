@@ -8,22 +8,31 @@ using BunnyCDN.Net.Storage.Models;
 
 namespace BunnyCDN.Net.Storage
 {
-    public class BunnyCDNStorage
+    public class BunnyCDNStorage : IDisposable
     {
         /// <summary>
         /// The API access key used for authentication
         /// </summary>
-        public string ApiAccessKey { get; private set; }
+#if !NETSTANDARD
+        private string ApiAccessKey { get; init; }
+#else
+        private string ApiAccessKey { get; set; }
+#endif
 
         /// <summary>
         /// The name of the storage zone we are working on
         /// </summary>
-        public string StorageZoneName { get; private set; }
+#if !NETSTANDARD
+        private string StorageZoneName { get; init; }
+#else
+        private string StorageZoneName { get; set; }
+#endif
 
         /// <summary>
         /// The HTTP Client used for the API communication
         /// </summary>
         private HttpClient _http = null;
+        private bool _disposed = false;
 
         /// <summary>
         /// Initializes a new instance of the BunnyCDNStorage class 
@@ -42,7 +51,7 @@ namespace BunnyCDN.Net.Storage
             _http.BaseAddress = new Uri(this.GetBaseAddress(mainReplicationRegion));
         }
 
-        #region Delete
+#region Delete
         /// <summary>
         /// Delete an object at the given path. If the object is a directory, the contents will also be deleted.
         /// </summary>
@@ -63,7 +72,7 @@ namespace BunnyCDN.Net.Storage
         }
         #endregion
 
-        #region List
+#region List
         /// <summary>
         /// Get the list of storage objects on the given path
         /// </summary>
@@ -84,9 +93,9 @@ namespace BunnyCDN.Net.Storage
                 throw this.MapResponseToException(response.StatusCode, normalizedPath);
             }
         }
-        #endregion
+#endregion
 
-        #region Upload
+#region Upload
         /// <summary>
         /// Upload an object from a stream (missing path will be created)
         /// </summary>
@@ -171,9 +180,9 @@ namespace BunnyCDN.Net.Storage
                 await UploadAsync(fileStream, path, validateChecksum, sha256Checksum, contentTypeOverride);
             }
         }
-        #endregion
+#endregion
 
-        #region Download
+#region Download
         /// <summary>
         /// Download the object to a local file
         /// </summary>
@@ -220,9 +229,27 @@ namespace BunnyCDN.Net.Storage
                 throw this.MapResponseToException((HttpStatusCode)(int)ex.Status, path);
             }
         }
-        #endregion
+#endregion
 
-        #region Utils
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _http.Dispose();
+                }
+                _disposed = true;
+            }
+        }
+
+#region Utils
         /// <summary>
         /// Map the API response to the correct BunnyCDNStorageExecption
         /// </summary>
@@ -245,7 +272,7 @@ namespace BunnyCDN.Net.Storage
         /// Normalize a path string
         /// </summary>
         /// <returns>Recognizable, valid string for use against API calls</returns>
-        public string NormalizePath(string path, bool? isDirectory = null)
+        internal string NormalizePath(string path, bool? isDirectory = null)
         {
             // Trim all prepending & tailing whitespace, fix windows-like paths then remove prepending slashes
             path = path.Trim()
@@ -268,7 +295,7 @@ namespace BunnyCDN.Net.Storage
 
             return path;
         }
-        #endregion
+
 
         /// <summary>
         /// Get the base HTTP URL address of the storage endpoint
@@ -284,5 +311,6 @@ namespace BunnyCDN.Net.Storage
 
             return $"https://{mainReplicationRegion}.storage.bunnycdn.com/";
         }
+#endregion
     }
 }
